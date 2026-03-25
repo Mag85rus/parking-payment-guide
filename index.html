@@ -22,12 +22,22 @@
             border-radius: 2rem;
             box-shadow: 0 25px 50px -12px rgba(180, 40, 40, 0.15);
             overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .hero {
             background: linear-gradient(135deg, #8b1a1a 0%, #b22222 50%, #d13a3a 100%);
             padding: 2rem 1.5rem;
             color: white;
             position: relative;
+            animation: slideIn 0.6s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
         .hero h1 {
             font-size: 1.8rem;
@@ -44,6 +54,11 @@
             padding: 8px;
             border-radius: 60px;
             font-size: 1.5rem;
+            animation: iconPop 0.5s ease-out 0.2s both;
+        }
+        @keyframes iconPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
         .hero p {
             font-size: 0.95rem;
@@ -68,34 +83,125 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            transition: transform 0.2s, background 0.2s;
         }
-        .lang-selector {
+        .badge:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* ========== БУРГЕР-ИКОНКА ========== */
+        #nav-icon2 {
+            width: 44px;
+            height: 34px;
             position: absolute;
             top: 1.2rem;
             right: 1.2rem;
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(4px);
-            border-radius: 40px;
-            padding: 0.2rem 0.6rem;
-            border: 1px solid rgba(255,255,255,0.3);
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-        .lang-selector select {
-            background: transparent;
-            border: none;
-            color: white;
-            font-weight: 600;
-            font-size: 0.85rem;
+            transform: rotate(0deg);
+            transition: .5s ease-in-out;
             cursor: pointer;
-            outline: none;
-            text-transform: uppercase;
+            z-index: 100;
         }
-        .lang-selector select option {
-            background: #b22222;
-            color: white;
-            text-transform: uppercase;
+        #nav-icon2 span {
+            display: block;
+            position: absolute;
+            height: 4px;
+            width: 50%;
+            background: white;
+            opacity: 1;
+            transform: rotate(0deg);
+            transition: .25s ease-in-out;
         }
+        #nav-icon2 span:nth-child(even) {
+            left: 50%;
+            border-radius: 0 4px 4px 0;
+        }
+        #nav-icon2 span:nth-child(odd) {
+            left: 0px;
+            border-radius: 4px 0 0 4px;
+        }
+        #nav-icon2 span:nth-child(1), 
+        #nav-icon2 span:nth-child(2) { top: 0px; }
+        #nav-icon2 span:nth-child(3), 
+        #nav-icon2 span:nth-child(4) { top: 12px; }
+        #nav-icon2 span:nth-child(5), 
+        #nav-icon2 span:nth-child(6) { top: 24px; }
+        #nav-icon2.open span:nth-child(1),
+        #nav-icon2.open span:nth-child(6) { transform: rotate(45deg); }
+        #nav-icon2.open span:nth-child(2),
+        #nav-icon2.open span:nth-child(5) { transform: rotate(-45deg); }
+        #nav-icon2.open span:nth-child(1) {
+            left: 4px;
+            top: 5px;
+        }
+        #nav-icon2.open span:nth-child(2) {
+            left: calc(50% - 4px);
+            top: 5px;
+        }
+        #nav-icon2.open span:nth-child(3) {
+            left: -50%;
+            opacity: 0;
+        }
+        #nav-icon2.open span:nth-child(4) {
+            left: 100%;
+            opacity: 0;
+        }
+        #nav-icon2.open span:nth-child(5) {
+            left: 4px;
+            top: 19px;
+        }
+        #nav-icon2.open span:nth-child(6) {
+            left: calc(50% - 4px);
+            top: 19px;
+        }
+        /* ========== ВЫПАДАЮЩАЯ ПАНЕЛЬ ЯЗЫКОВ ========== */
+        .language-menu {
+            position: absolute;
+            top: 70px;
+            right: 1.2rem;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 0.5rem 0;
+            min-width: 100px;
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            border: 1px solid #ffe0e0;
+        }
+        .language-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .lang-option {
+            padding: 0.7rem 1.2rem;
+            font-weight: 600;
+            color: #8b2a2a;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .lang-option:hover {
+            background: #fff0f0;
+        }
+        .lang-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 98;
+            display: none;
+        }
+        .lang-overlay.active {
+            display: block;
+        }
+
         .content {
             padding: 1.5rem;
         }
@@ -109,6 +215,7 @@
             gap: 10px;
             border-left: 4px solid #d43a3a;
             padding-left: 0.8rem;
+            animation: fadeInUp 0.5s ease-out;
         }
         .section-title i { color: #c02c2c; font-size: 1.4rem; }
         .methods-grid {
@@ -126,6 +233,22 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: cardAppear 0.5s ease-out backwards;
+        }
+        .card:nth-child(1) { animation-delay: 0.05s; }
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.15s; }
+        .card:nth-child(4) { animation-delay: 0.2s; }
+        .card:nth-child(5) { animation-delay: 0.25s; }
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 15px 30px rgba(180, 40, 40, 0.1);
+            border-color: #f0b3b3;
         }
         .card-header {
             padding: 1rem 1.2rem 0.6rem 1.2rem;
@@ -142,6 +265,10 @@
             background: #fff0f0;
             padding: 8px;
             border-radius: 14px;
+            transition: transform 0.2s;
+        }
+        .card:hover .card-header i {
+            transform: scale(1.05);
         }
         .card-header h2 { font-size: 1.2rem; font-weight: 700; margin: 0; color: #8b2a2a; }
         .offline-badge {
@@ -236,7 +363,6 @@
             gap: 8px;
             align-items: center;
         }
-        /* Image styling for app download card */
         .app-image-container {
             margin-top: 1rem;
             text-align: center;
@@ -257,7 +383,6 @@
             color: #b22b2b;
             margin-top: 0.5rem;
         }
-        /* Store links row */
         .store-links {
             display: flex;
             flex-wrap: wrap;
@@ -273,14 +398,14 @@
             font-weight: 600;
             color: #b52a2a;
             text-decoration: none;
-            transition: 0.2s;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 6px;
         }
         .store-link:hover {
             background: #fad0d0;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
         .store-link i {
             font-size: 0.8rem;
@@ -312,6 +437,7 @@
             margin-top: 1rem;
             font-size: 0.8rem;
             border: 1px solid #ffd9d9;
+            animation: fadeInUp 0.5s ease-out 0.3s backwards;
         }
         .contact-row {
             display: flex;
@@ -333,22 +459,100 @@
             font-size: 0.8rem;
             white-space: nowrap;
         }
+
+        /* ========== КНОПКА С ПОДСКАЗКОЙ ========== */
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1rem;
+        }
+        .button-wrapper {
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+        }
         .micro-btn {
             background: #b22222;
             color: white;
             border: none;
-            padding: 0.7rem 1.5rem;
+            padding: 0.8rem 1.8rem;
             border-radius: 60px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: 700;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
             cursor: pointer;
-            transition: 0.2s;
-            margin: 0.8rem 0 0;
+            transition: all 0.3s ease;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(178, 34, 34, 0.3);
+            animation: pulseGlow 1.8s infinite ease-in-out, float 2.5s infinite ease-in-out;
         }
-        .micro-btn:hover { background: #8b1a1a; transform: translateY(-2px); }
+        @keyframes pulseGlow {
+            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(178, 34, 34, 0.3); }
+            50% { transform: scale(1.03); box-shadow: 0 8px 25px rgba(178, 34, 34, 0.5); }
+            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(178, 34, 34, 0.3); }
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+            100% { transform: translateY(0px); }
+        }
+        .micro-btn:hover {
+            background: #8b1a1a;
+            transform: scale(1.02) translateY(-2px);
+            animation: none;
+            box-shadow: 0 10px 30px rgba(178, 34, 34, 0.5);
+        }
+        /* Постоянная подсказка рядом с кнопкой */
+        .click-hint {
+            font-size: 0.75rem;
+            color: #b52a2a;
+            background: #fff0f0;
+            padding: 0.3rem 0.8rem;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+        .click-hint i {
+            font-size: 0.7rem;
+        }
+        @media (max-width: 640px) {
+            .button-group {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+            }
+            .button-wrapper {
+                width: 100%;
+            }
+            .micro-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+                animation: pulseGlowMobile 1.6s infinite ease-in-out, float 2.5s infinite ease-in-out;
+            }
+            .click-hint {
+                justify-content: center;
+                white-space: normal;
+                text-align: center;
+                width: 100%;
+            }
+            @keyframes pulseGlowMobile {
+                0% { transform: scale(1); box-shadow: 0 4px 12px rgba(178, 34, 34, 0.3); }
+                50% { transform: scale(1.02); box-shadow: 0 6px 18px rgba(178, 34, 34, 0.5); }
+                100% { transform: scale(1); box-shadow: 0 4px 12px rgba(178, 34, 34, 0.3); }
+            }
+        }
+
+        /* ========== МОДАЛЬНОЕ ОКНО С ФИКСИРОВАННЫМ КРЕСТИКОМ ========== */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -376,14 +580,26 @@
             padding: 1.2rem;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             border-top: 5px solid #b22222;
+            animation: modalZoom 0.3s ease-out;
+            position: relative;
+        }
+        @keyframes modalZoom {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 0 0 0.8rem 0;
+            border-bottom: 1px solid #ffe0e0;
+            z-index: 5;
         }
-        .modal-header h3 { font-size: 1.3rem; color: #a51f1f; }
+        .modal-header h3 { font-size: 1.3rem; color: #a51f1f; margin: 0; }
         .close-modal {
             background: #fee8e8;
             border: none;
@@ -392,6 +608,15 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .close-modal:hover {
+            transform: rotate(90deg);
+            background: #fad0d0;
         }
         .quiz-question {
             margin-bottom: 1.2rem;
@@ -421,8 +646,14 @@
             font-weight: 600;
             cursor: pointer;
             font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .quiz-btn:hover {
+            transform: translateY(-2px);
+            background: #fad0d0;
         }
         .quiz-btn.primary { background: #b22222; color: white; }
+        .quiz-btn.primary:hover { background: #8b1a1a; }
         .quiz-result {
             background: #fef3e8;
             border-radius: 1rem;
@@ -430,20 +661,44 @@
             margin-top: 1rem;
             font-size: 0.85rem;
         }
+
         @media (min-width: 768px) {
-            .hero h1 { font-size: 2rem; padding-right: 100px; }
+            .hero h1 { font-size: 2rem; padding-right: 70px; }
             .hero p { font-size: 1rem; max-width: 80%; }
             .methods-grid { gap: 1.5rem; }
             .card-header h2 { font-size: 1.3rem; }
             .content { padding: 2rem; }
+            #nav-icon2 {
+                width: 50px;
+                height: 38px;
+                top: 1.5rem;
+                right: 1.5rem;
+            }
         }
         @media (max-width: 640px) {
             .hero { padding: 1.5rem; }
-            .hero h1 { font-size: 1.5rem; padding-right: 60px; }
-            .micro-btn { width: 100%; justify-content: center; }
+            .hero h1 { font-size: 1.5rem; padding-right: 55px; }
+            #nav-icon2 {
+                width: 38px;
+                height: 30px;
+                top: 1rem;
+                right: 1rem;
+            }
+            #nav-icon2 span { height: 3px; }
+            #nav-icon2 span:nth-child(3), #nav-icon2 span:nth-child(4) { top: 10px; }
+            #nav-icon2 span:nth-child(5), #nav-icon2 span:nth-child(6) { top: 20px; }
+            .language-menu {
+                top: 60px;
+                right: 1rem;
+                min-width: 85px;
+            }
+            .lang-option {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
         }
         @media print {
-            .micro-btn, .modal-overlay, .lang-selector { display: none; }
+            .micro-btn, .modal-overlay, #nav-icon2, .language-menu, .lang-overlay, .click-hint { display: none; }
             .hero { background: #b22222; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .card { break-inside: avoid; border: 1px solid #ccc; }
             .store-link { text-decoration: none; color: black; border: 1px solid #ccc; }
@@ -453,14 +708,24 @@
 <body>
 <div class="container">
     <div class="hero">
-        <div class="lang-selector">
-            <select id="languageSelect">
-                <option value="ru">RU</option>
-                <option value="kg">KG</option>
-                <option value="uz">UZ</option>
-                <option value="tj">TJ</option>
-            </select>
+        <!-- Бургер-иконка для выбора языка -->
+        <div id="nav-icon2">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
+        <!-- Выпадающая панель языков -->
+        <div class="language-menu" id="languageMenu">
+            <div class="lang-option" data-lang="ru">RU</div>
+            <div class="lang-option" data-lang="kg">KG</div>
+            <div class="lang-option" data-lang="uz">UZ</div>
+            <div class="lang-option" data-lang="tj">TJ</div>
+        </div>
+        <div class="lang-overlay" id="langOverlay"></div>
+
         <h1><i class="fas fa-parking"></i> <span data-i18n="hero_title">Оплата парковки</span></h1>
         <p data-i18n="hero_sub">Быстро, удобно и без штрафов. Выберите подходящий способ оплаты уличных парковок.</p>
         <div class="badge-group">
@@ -488,7 +753,7 @@
                     <div class="info-note" style="margin-top:0.8rem;"><i class="fas fa-desktop"></i> <span data-i18n="lk_info">Удобно для планирования заранее. Поддерживается возврат при преждевременном завершении.</span></div>
                 </div>
             </div>
-            <!-- Приложение Парковки России (с изображением и ссылками) -->
+            <!-- Приложение Парковки России -->
             <div class="card">
                 <div class="card-header"><i class="fas fa-app-store-ios"></i><h2 data-i18n="card_app_title">«Парковки России»</h2></div>
                 <div class="card-body">
@@ -501,7 +766,6 @@
                     </ul>
                     <div class="grz-note"><i class="fas fa-info-circle"></i> <span data-i18n="grz_note">ГРЗ — государственный регистрационный номер автомобиля</span></div>
                     <div class="info-note"><i class="fas fa-globe"></i> <span data-i18n="app_info">Приложение также доступно для оплаты парковок в Московской области и других регионах.</span></div>
-                    <!-- Изображение и ссылки на магазины -->
                     <div class="app-image-container">
                         <img src="скачайте.png" alt="Скачайте приложение Парковки России">
                         <p data-i18n="download_image_caption">📲 Сканируйте QR-код для скачивания приложения</p>
@@ -583,14 +847,24 @@
 
         <div style="margin-top:1rem; display:flex; flex-wrap:wrap; gap:1rem; justify-content:space-between; align-items:center;">
             <div style="background:#ffeaea; border-radius:28px; padding:0.4rem 1rem; font-size:0.75rem;"><i class="fas fa-city"></i> <span data-i18n="city_note">Сервис работает в Москве, Московской области и других регионах присутствия</span></div>
-            <button class="micro-btn" id="openQuizBtn"><i class="fas fa-graduation-cap"></i> <span data-i18n="quiz_btn">Микрообучение: проверочный тест</span></button>
+            <div class="button-group">
+                <div class="button-wrapper">
+                    <button class="micro-btn" id="openQuizBtn"><i class="fas fa-fire"></i> <span data-i18n="quiz_btn">🔥 Проверь себя!</span> <i class="fas fa-arrow-right"></i></button>
+                </div>
+                <div class="click-hint" data-i18n="click_hint">
+                    <i class="fas fa-hand-pointer"></i> Нажми, чтобы пройти мини-тест
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <div id="quizModal" class="modal-overlay">
     <div class="modal-content">
-        <div class="modal-header"><h3><i class="fas fa-brain"></i> <span data-i18n="quiz_title">Проверь свои знания</span></h3><button class="close-modal" id="closeModalBtn">&times;</button></div>
+        <div class="modal-header">
+            <h3><i class="fas fa-brain"></i> <span data-i18n="quiz_title">Проверь свои знания</span></h3>
+            <button class="close-modal" id="closeModalBtn">&times;</button>
+        </div>
         <div id="quizContainer"></div>
         <div class="quiz-buttons"><button id="checkQuizBtn" class="quiz-btn primary" data-i18n="quiz_check">Проверить ответы</button><button id="retakeQuizBtn" class="quiz-btn" data-i18n="quiz_retake">Пройти заново</button></div>
         <div id="quizResult" class="quiz-result" style="display:none;"></div>
@@ -609,7 +883,7 @@ const translations = {
     card_blitz_title: "Блиц‑приложение", blitz_step1: "Отсканируйте QR‑код на информационном щите в начале зоны.", blitz_step2: "Введите номер парковки (или нажмите автоопределение) + ГРЗ.", blitz_step3: "Выберите время, введите телефон и код из СМС.", blitz_step4: "Оплатите картой или через СБП.", blitz_warning: "Без продления и изменения сессии. Для полного функционала скачайте основное приложение «Парковки России».", blitz_image_caption: "📱 Сканируйте QR-код на щите для быстрой оплаты",
     card_sms_title: "СМС на 7757", offline_badge: "Без интернета", sms_format_label: "Формат для старта:", sms_explain: "где 1004 — номер зоны, А123АА199 — ГРЗ, 3 — часы (1–24).", sms_extend_label: "Продление", sms_extend_desc: "(на 2 часа)", sms_stop_label: "Досрочная остановка", sms_or: "или", sms_warning: "Если на парковочном счету недостаточно средств, придёт СМС с подтверждением списания со счёта телефона (кроме Tele2). Комиссию уточняйте у оператора.", sms_tariff: "Поминутная тарификация: при досрочном завершении деньги возвращаются на парковочный счёт.",
     card_voice_title: "Голосовой сервис", voice_call: "Позвоните:", voice_step2: "Скажите «Оплатить парковку голосом» роботу.", voice_step3: "Назовите ГРЗ автомобиля, номер зоны и время. Система повторит → подтвердите.", voice_warning: "Продлить или завершить можно повторным звонком либо через СМС с командой <span class=\"inline-code\">S</span>.",
-    footer_important: "Важно: поминутная тарификация во всех способах", footer_refund: "✅ Если завершить парковку досрочно, деньги за неиспользованное время <strong>сохраняются на парковочном счёте</strong> и доступны для будущих сессий. При оплате через СМС возврат идёт на счёт мобильного (согласно условиям оператора).", contact_center: "Единый контакт-центр «Московский транспорт»:", operators: "Операторы: Мегафон, МТС, билайн, Tele2 (условия оплаты могут отличаться)", legal: "Порядок мобильных платежей по законодательству РФ", blitz_note_title: "Блиц-оплата без установки:", blitz_note_text: "отсканируйте QR на щите — откроется быстрая форма. Продление и изменение доступны только в полной версии приложения.", city_note: "Сервис работает в Москве, Московской области и других регионах присутствия", quiz_btn: "Микрообучение: проверочный тест", quiz_title: "Проверь свои знания", quiz_check: "Проверить ответы", quiz_retake: "Пройти заново",
+    footer_important: "Важно: поминутная тарификация во всех способах", footer_refund: "✅ Если завершить парковку досрочно, деньги за неиспользованное время <strong>сохраняются на парковочном счёте</strong> и доступны для будущих сессий. При оплате через СМС возврат идёт на счёт мобильного (согласно условиям оператора).", contact_center: "Единый контакт-центр «Московский транспорт»:", operators: "Операторы: Мегафон, МТС, билайн, Tele2 (условия оплаты могут отличаться)", legal: "Порядок мобильных платежей по законодательству РФ", blitz_note_title: "Блиц-оплата без установки:", blitz_note_text: "отсканируйте QR на щите — откроется быстрая форма. Продление и изменение доступны только в полной версии приложения.", city_note: "Сервис работает в Москве, Московской области и других регионах присутствия", quiz_btn: "🔥 Проверь себя!", click_hint: "👉 Нажми, чтобы пройти мини-тест", quiz_title: "Проверь свои знания", quiz_check: "Проверить ответы", quiz_retake: "Пройти заново",
     quiz_q1: "Какие способы оплаты парковки работают даже без доступа к интернету?", quiz_q1_opts: ["Мобильное приложение «Парковки России»","СМС на номер 7757 и голосовой сервис","Личный кабинет на parking.mos.ru","Блиц-приложение по QR-коду"], quiz_q1_correct_expl: "СМС на 7757 и голосовой сервис (звонок 3210) не требуют интернета.",
     quiz_q2: "Что означает аббревиатура ГРЗ?", quiz_q2_opts: ["Городская разрешительная зона","Государственный регистрационный номер","График работы зоны","Главный расчётный знак"], quiz_q2_correct_expl: "ГРЗ — государственный регистрационный номер автомобиля.",
     quiz_q3: "Как досрочно завершить парковку, если вы оплатили её через СМС?", quiz_q3_opts: ["Отправить СМС с текстом STOP","Отправить СМС с командой S или С на номер 7757","Позвонить на 112","Завершить парковку нельзя, только ждать окончания времени"], quiz_q3_correct_expl: "Для досрочной остановки через СМС отправьте букву S или С на номер 7757. Деньги за неиспользованное время вернутся.",
@@ -626,7 +900,7 @@ const translations = {
     card_blitz_title: "Блиц‑колдонмо", blitz_step1: "Зонанын башындагы маалымат тактасындагы QR‑кодду сканерлеңиз.", blitz_step2: "Унаа токтотуунун номерин (же автоаныктаманы басып) + ГРЗ киргизиңиз.", blitz_step3: "Убакытты тандап, телефон номериңизди жана СМС кодуңузду киргизиңиз.", blitz_step4: "Карта же СБП аркылуу төлөңүз.", blitz_warning: "Узартуу же өзгөртүү жок. Толук функционал үчүн «Парковки России» негизги колдонмосун жүктөп алыңыз.", blitz_image_caption: "📱 Щиттеги QR-кодду тез төлөө үчүн сканерлеңиз",
     card_sms_title: "7757 номерине СМС", offline_badge: "Интернетсиз", sms_format_label: "Баштоо форматы:", sms_explain: "мында 1004 — зона номери, А123АА199 — ГРЗ, 3 — саат (1–24).", sms_extend_label: "Узартуу", sms_extend_desc: "(2 саатка)", sms_stop_label: "Мөөнөтүнөн мурда токтотуу", sms_or: "же", sms_warning: "Эгер виртуалдык эсепте каражат жетишсиз болсо, телефон эсебинен төлөөнү ырастоо үчүн СМС келет (Tele2ден башка). Комиссияны операторуңуздан тактаңыз.", sms_tariff: "Мүнөтүнө эсептөө: мөөнөтүнөн мурда бүтүрсөңүз, акча унаа токтотуу эсебине кайтарылат.",
     card_voice_title: "Үн сервиси", voice_call: "Чалуу:", voice_step2: "Роботко «Унаа токтотууну үн менен төлөө» деңиз.", voice_step3: "Унаанын ГРЗ, зона номерин жана убакытты айтыңыз. Система кайталайт → ырастаңыз.", voice_warning: "Узартуу же бүтүрүү үчүн кайра чалыңыз же <span class=\"inline-code\">S</span> буйругу менен СМС жөнөтүңүз.",
-    footer_important: "Маанилүү: бардык ыкмаларда мүнөтүнө эсептөө", footer_refund: "✅ Эгер унаа токтотууну мөөнөтүнөн мурда бүтүрсөңүз, пайдаланылбаган убакыт үчүн акча <strong>парковкалык эсепте сакталат</strong> жана кийинки сессияларга колдонулат. СМС аркылуу төлөгөндө кайтарым телефон эсебине келет (оператордун шарттарына жараша).", contact_center: "Бирдиктүү байланыш борбору «Московский транспорт»:", operators: "Операторлор: Мегафон, МТС, билайн, Tele2 (төлөм шарттары айырмаланышы мүмкүн)", legal: "Мобилдик төлөмдөрдүн тартиби РФ мыйзамдарына ылайык", blitz_note_title: "Орнотуусуз блиц-төлөм:", blitz_note_text: "тактадагы QR кодун сканерлеңиз — тез форма ачылат. Узартуу жана өзгөртүү толук колдонмодо гана жеткиликтүү.", city_note: "Кызмат Москвада, Москва облусунда жана башка аймактарда иштейт", quiz_btn: "Микро-окутуу: текшерүү тести", quiz_title: "Билимиңизди текшериңиз", quiz_check: "Жоопторду текшерүү", quiz_retake: "Кайра өтүү",
+    footer_important: "Маанилүү: бардык ыкмаларда мүнөтүнө эсептөө", footer_refund: "✅ Эгер унаа токтотууну мөөнөтүнөн мурда бүтүрсөңүз, пайдаланылбаган убакыт үчүн акча <strong>парковкалык эсепте сакталат</strong> жана кийинки сессияларга колдонулат. СМС аркылуу төлөгөндө кайтарым телефон эсебине келет (оператордун шарттарына жараша).", contact_center: "Бирдиктүү байланыш борбору «Московский транспорт»:", operators: "Операторлор: Мегафон, МТС, билайн, Tele2 (төлөм шарттары айырмаланышы мүмкүн)", legal: "Мобилдик төлөмдөрдүн тартиби РФ мыйзамдарына ылайык", blitz_note_title: "Орнотуусуз блиц-төлөм:", blitz_note_text: "тактадагы QR кодун сканерлеңиз — тез форма ачылат. Узартуу жана өзгөртүү толук колдонмодо гана жеткиликтүү.", city_note: "Кызмат Москвада, Москва облусунда жана башка аймактарда иштейт", quiz_btn: "🔥 Өзүңдү текшер!", click_hint: "👉 Мини-тестти өтүү үчүн бас", quiz_title: "Билимиңизди текшериңиз", quiz_check: "Жоопторду текшерүү", quiz_retake: "Кайра өтүү",
     quiz_q1: "Интернетке кирүү мүмкүнчүлүгү жок болсо да кайсы төлөм жолдору иштейт?", quiz_q1_opts: ["«Парковки России» колдонмосу","7757 номерине СМС жана үн сервиси","parking.mos.ru жеке кабинети","QR-код аркылуу блиц-колдонмо"], quiz_q1_correct_expl: "7757ге СМС жана үн сервиси (3210 чалуу) интернетти талап кылбайт.",
     quiz_q2: "ГРЗ аббревиатурасы эмнени билдирет?", quiz_q2_opts: ["Шаардык уруксат берүү аймагы","Мамлекеттик каттоо номери","Аймактын иш графиги","Башкы эсептегич белги"], quiz_q2_correct_expl: "ГРЗ — мамлекеттик каттоо номери.",
     quiz_q3: "Эгер сиз парковканы СМС аркылуу төлөсөңүз, аны мөөнөтүнөн мурда кантип бүтүрөсүз?", quiz_q3_opts: ["STOP деген СМС жөнөтүү","7757 номерине S же С буйругу менен СМС жөнөтүү","112ге чалуу","Парковканы бүтүрүү мүмкүн эмес, убакытты күтүңүз"], quiz_q3_correct_expl: "Мөөнөтүнөн мурда бүтүрүү үчүн 7757ге S же С тамгасын жөнөтүңүз. Пайдаланылбаган убакыт үчүн акча кайтарылат.",
@@ -643,7 +917,7 @@ const translations = {
     card_blitz_title: "Blits‑ilova", blitz_step1: "Zona boshidagi axborot shitidagi QR‑kodni skanerlang.", blitz_step2: "Avtoturargoh raqamini (yoki avtoaniqlashni bosib) + GRZ ni kiriting.", blitz_step3: "Vaqtni tanlang, telefon raqami va SMS kodini kiriting.", blitz_step4: "Karta yoki TIZ (SBP) orqali to‘lang.", blitz_warning: "Uzaytirish va o‘zgartirish yo‘q. To‘liq funksiya uchun «Парковки России» asosiy ilovasini yuklab oling.", blitz_image_caption: "📱 Tez to‘lov uchun shitdagi QR-kodni skanerlang",
     card_sms_title: "7757 ga SMS", offline_badge: "Internetsiz", sms_format_label: "Boshlash formati:", sms_explain: "bu yerda 1004 — zona raqami, А123АА199 — GRZ, 3 — soat (1–24).", sms_extend_label: "Uzaytirish", sms_extend_desc: "(2 soatga)", sms_stop_label: "Muddatidan oldin to‘xtatish", sms_or: "yoki", sms_warning: "Agar virtual hisobda mablag‘ yetarli bo‘lmasa, telefon hisobidan to‘lovni tasdiqlash uchun SMS keladi (Tele2 dan tashqari). Komissiyani operatoringizdan aniqlang.", sms_tariff: "Daqiqali tarif: muddatidan oldin tugatsangiz, pul avtoturargoh hisobiga qaytariladi.",
     card_voice_title: "Ovozli xizmat", voice_call: "Qo‘ng‘iroq qiling:", voice_step2: "Roborga «Avtoturargohni ovoz bilan to‘lash» deb ayting.", voice_step3: "Avtomobilning GRZ, zona raqami va vaqtni ayting. Tizim takrorlaydi → tasdiqlang.", voice_warning: "Uzaytirish yoki tugatish uchun qayta qo‘ng‘iroq qiling yoki <span class=\"inline-code\">S</span> buyrug‘i bilan SMS yuboring.",
-    footer_important: "Muhim: barcha usullarda daqiqali tarif", footer_refund: "✅ Agar avtoturargohni muddatidan oldin tugatsangiz, foydalanilmagan vaqt uchun pul <strong>avtoturargoh hisobida saqlanadi</strong> va keyingi seanslar uchun ishlatiladi. SMS orqali to‘lovda qaytarim telefon hisobiga tushadi (operator shartlariga ko‘ra).", contact_center: "«Moskva transporti» yagona aloqa markazi:", operators: "Operatorlar: Megafon, MTS, Beeline, Tele2 (to‘lov shartlari farq qilishi mumkin)", legal: "Mobil to‘lovlar tartibi RF qonunchiligiga muvofiq", blitz_note_title: "O‘rnatmasiz blits-to‘lov:", blitz_note_text: "shitdagi QR kodni skanerlang — tezkor forma ochiladi. Uzaytirish va o‘zgartirish faqat to‘liq ilovada mavjud.", city_note: "Xizmat Moskva, Moskva viloyati va boshqa hududlarda ishlaydi", quiz_btn: "Mikro-o‘quv: test", quiz_title: "Bilimingizni sinab ko‘ring", quiz_check: "Javoblarni tekshirish", quiz_retake: "Qayta o‘tish",
+    footer_important: "Muhim: barcha usullarda daqiqali tarif", footer_refund: "✅ Agar avtoturargohni muddatidan oldin tugatsangiz, foydalanilmagan vaqt uchun pul <strong>avtoturargoh hisobida saqlanadi</strong> va keyingi seanslar uchun ishlatiladi. SMS orqali to‘lovda qaytarim telefon hisobiga tushadi (operator shartlariga ko‘ra).", contact_center: "«Moskva transporti» yagona aloqa markazi:", operators: "Operatorlar: Megafon, MTS, Beeline, Tele2 (to‘lov shartlari farq qilishi mumkin)", legal: "Mobil to‘lovlar tartibi RF qonunchiligiga muvofiq", blitz_note_title: "O‘rnatmasiz blits-to‘lov:", blitz_note_text: "shitdagi QR kodni skanerlang — tezkor forma ochiladi. Uzaytirish va o‘zgartirish faqat to‘liq ilovada mavjud.", city_note: "Xizmat Moskva, Moskva viloyati va boshqa hududlarda ishlaydi", quiz_btn: "🔥 O‘zingni sinab ko‘r!", click_hint: "👉 Mini-testni boshlash uchun bosing", quiz_title: "Bilimingizni sinab ko‘ring", quiz_check: "Javoblarni tekshirish", quiz_retake: "Qayta o‘tish",
     quiz_q1: "Internetga kirish imkoni bo‘lmagan taqdirda ham qaysi to‘lov usullari ishlaydi?", quiz_q1_opts: ["«Парковки России» ilovasi","7757 ga SMS va ovozli xizmat","parking.mos.ru shaxsiy kabineti","QR-kod orqali blits-ilova"], quiz_q1_correct_expl: "7757 ga SMS va ovozli xizmat (3210 qo‘ng‘iroq) internetni talab qilmaydi.",
     quiz_q2: "GRZ qisqartmasi nimani anglatadi?", quiz_q2_opts: ["Shahar ruxsat zonasi","Davlat ro‘yxatga olish raqami","Zona ish jadvali","Bosh hisob belgisi"], quiz_q2_correct_expl: "GRZ — davlat ro‘yxatga olish raqami.",
     quiz_q3: "Agar avtoturargohni SMS orqali to‘lagan bo‘lsangiz, uni muddatidan oldin qanday tugatasiz?", quiz_q3_opts: ["STOP matnli SMS yuborish","7757 ga S yoki C buyrug‘i bilan SMS yuborish","112 ga qo‘ng‘iroq qilish","Avtoturargohni tugatib bo‘lmaydi, vaqtni kutish kerak"], quiz_q3_correct_expl: "Muddatidan oldin to‘xtatish uchun 7757 ga S yoki C harfini yuboring. Foydalanilmagan vaqt puli qaytariladi.",
@@ -660,7 +934,7 @@ const translations = {
     card_blitz_title: "Барномаи блиц", blitz_step1: "QR‑кодро дар тахтаи иттилоотӣ дар аввали минтақа сканер кунед.", blitz_step2: "Рақами парковка (ё автоидентификатсияро пахш кунед) + ГРЗ ворид кунед.", blitz_step3: "Вақтро интихоб кунед, телефон ва рамзи СМС-ро ворид кунед.", blitz_step4: "Бо корт ё СБП пардохт кунед.", blitz_warning: "Бе дароз кардан ва тағйир додан. Барои функсияи пурра барномаи асосии «Парковки России» -ро зеркашӣ кунед.", blitz_image_caption: "📱 Барои пардохти зуд QR-кодро дар тахта скан кунед",
     card_sms_title: "СМС ба 7757", offline_badge: "Бе интернет", sms_format_label: "Формат барои оғоз:", sms_explain: "дар ин ҷо 1004 — рақами минтақа, А123АА199 — ГРЗ, 3 — соат (1–24).", sms_extend_label: "Дароз кардан", sms_extend_desc: "(ба 2 соат)", sms_stop_label: "Қатъи пеш аз мӯҳлат", sms_or: "ё", sms_warning: "Агар дар ҳисоби виртуалии парковка маблағ кифоя набошад, СМС барои тасдиқи пардохт аз ҳисоби телефон меояд (ғайр аз Tele2). Комиссияро аз оператори худ пурсед.", sms_tariff: "Тарифи дақиқаӣ: ҳангоми қатъи пеш аз мӯҳлат пул ба ҳисоби парковка бармегардад.",
     card_voice_title: "Хидмати овозӣ", voice_call: "Тамос гиред:", voice_step2: "Ба робот бигӯед «Пардохти парковка бо овоз».", voice_step3: "ГРЗ автомобил, рақами минтақа ва вақтро ном баред. Система такрор мекунад → тасдиқ кунед.", voice_warning: "Барои дароз кардан ё қатъ кардан такронан занг занед ё СМС бо фармони <span class=\"inline-code\">S</span> фиристед.",
-    footer_important: "Муҳим: тарифи дақиқаӣ дар ҳамаи усулҳо", footer_refund: "✅ Агар парковкаро пеш аз мӯҳлат қатъ кунед, пули вақти истифоданашуда <strong>дар ҳисоби парковка нигоҳ дошта мешавад</strong> ва барои сеансҳои оянда истифода мешавад. Ҳангоми пардохт тавассути СМС бозгардон ба ҳисоби телефон меравад (тибқи шартҳои оператор).", contact_center: "Маркази ягонаи тамос «Московский транспорт»:", operators: "Операторҳо: Мегафон, МТС, билайн, Tele2 (шартҳои пардохт метавонанд фарқ кунанд)", legal: "Тартиби пардохтҳои мобилӣ тибқи қонунгузории Федератсияи Россия", blitz_note_title: "Пардохти блиц бе насб:", blitz_note_text: "QR-кодро дар тахта сканер кунед — шакли зуд кушода мешавад. Дароз кардан ва тағйир додан танҳо дар версияи пурраи барнома дастрас аст.", city_note: "Хизмат дар Маскав, вилояти Маскав ва дигар минтақаҳои ҳузур кор мекунад", quiz_btn: "Микроомӯзиш: санҷиши озмоишӣ", quiz_title: "Дониши худро санҷед", quiz_check: "Ҷавобҳоро санҷед", quiz_retake: "Аз нав гузаштан",
+    footer_important: "Муҳим: тарифи дақиқаӣ дар ҳамаи усулҳо", footer_refund: "✅ Агар парковкаро пеш аз мӯҳлат қатъ кунед, пули вақти истифоданашуда <strong>дар ҳисоби парковка нигоҳ дошта мешавад</strong> ва барои сеансҳои оянда истифода мешавад. Ҳангоми пардохт тавассути СМС бозгардон ба ҳисоби телефон меравад (тибқи шартҳои оператор).", contact_center: "Маркази ягонаи тамос «Московский транспорт»:", operators: "Операторҳо: Мегафон, МТС, билайн, Tele2 (шартҳои пардохт метавонанд фарқ кунанд)", legal: "Тартиби пардохтҳои мобилӣ тибқи қонунгузории Федератсияи Россия", blitz_note_title: "Пардохти блиц бе насб:", blitz_note_text: "QR-кодро дар тахта сканер кунед — шакли зуд кушода мешавад. Дароз кардан ва тағйир додан танҳо дар версияи пурраи барнома дастрас аст.", city_note: "Хизмат дар Маскав, вилояти Маскав ва дигар минтақаҳои ҳузур кор мекунад", quiz_btn: "🔥 Худро санҷ!", click_hint: "👉 Барои гузаштани тест пахш кунед", quiz_title: "Дониши худро санҷед", quiz_check: "Ҷавобҳоро санҷед", quiz_retake: "Аз нав гузаштан",
     quiz_q1: "Кадом усулҳои пардохти парковка ҳатто бе дастрасӣ ба интернет кор мекунанд?", quiz_q1_opts: ["Барномаи «Парковки России»","СМС ба 7757 ва хидмати овозӣ","Кабинети шахсӣ дар parking.mos.ru","Барномаи блиц тавассути QR-код"], quiz_q1_correct_expl: "СМС ба 7757 ва хидмати овозӣ (занги 3210) интернетро талаб намекунанд.",
     quiz_q2: "Ихтисораи ГРЗ чӣ маъно дорад?", quiz_q2_opts: ["Минтақаи иҷозатномаи шаҳрӣ","Рақами давлатии бақайдигирӣ","Ҷадвали кори минтақа","Аломати ҳисоби асосӣ"], quiz_q2_correct_expl: "ГРЗ — рақами давлатии бақайдигирии автомобил.",
     quiz_q3: "Агар парковкаро тавассути СМС пардохт карда бошед, онро пеш аз мӯҳлат чӣ гуна қатъ мекунед?", quiz_q3_opts: ["СМС бо матни STOP фиристодан","СМС бо фармони S ё С ба 7757 фиристодан","Ба 112 занг задан","Қатъи парковка мумкин нест, фақат интизори анҷоми вақт шавед"], quiz_q3_correct_expl: "Барои қатъи пеш аз мӯҳлат тавассути СМС ҳарфи S ё С-ро ба 7757 фиристед. Пули вақти истифоданашуда бармегардад.",
@@ -750,7 +1024,48 @@ function setLanguage(lang) {
   document.querySelector('#retakeQuizBtn').innerHTML = t.quiz_retake;
 }
 
-document.getElementById('languageSelect').addEventListener('change', (e) => setLanguage(e.target.value));
+// Бургер-меню логика
+const burger = document.getElementById('nav-icon2');
+const langMenu = document.getElementById('languageMenu');
+const overlay = document.getElementById('langOverlay');
+
+function closeMenu() {
+  burger.classList.remove('open');
+  langMenu.classList.remove('active');
+  overlay.classList.remove('active');
+}
+
+function openMenu() {
+  burger.classList.add('open');
+  langMenu.classList.add('active');
+  overlay.classList.add('active');
+}
+
+burger.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (langMenu.classList.contains('active')) {
+    closeMenu();
+  } else {
+    openMenu();
+  }
+});
+
+overlay.addEventListener('click', closeMenu);
+
+document.querySelectorAll('.lang-option').forEach(opt => {
+  opt.addEventListener('click', (e) => {
+    const lang = opt.getAttribute('data-lang');
+    setLanguage(lang);
+    closeMenu();
+  });
+});
+
+document.addEventListener('click', (e) => {
+  if (!burger.contains(e.target) && !langMenu.contains(e.target)) {
+    closeMenu();
+  }
+});
+
 const modal = document.getElementById('quizModal');
 document.getElementById('openQuizBtn').addEventListener('click', () => { resetQuiz(); modal.classList.add('active'); });
 document.getElementById('closeModalBtn').addEventListener('click', () => modal.classList.remove('active'));
