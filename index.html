@@ -523,7 +523,6 @@
             animation: none;
             box-shadow: 0 10px 30px rgba(178, 34, 34, 0.5);
         }
-        /* Постоянная подсказка рядом с кнопкой */
         .click-hint {
             font-size: 0.75rem;
             color: #b52a2a;
@@ -535,9 +534,6 @@
             gap: 6px;
             white-space: nowrap;
             font-weight: 500;
-        }
-        .click-hint i {
-            font-size: 0.7rem;
         }
         @media (max-width: 640px) {
             .button-group {
@@ -567,7 +563,6 @@
                 100% { transform: scale(1); box-shadow: 0 4px 12px rgba(178, 34, 34, 0.3); }
             }
         }
-        /* Адаптация для мобильных: надпись "Язык" */
         @media (max-width: 640px) {
             .lang-switcher {
                 top: 1rem;
@@ -626,7 +621,60 @@
             .content { padding: 2rem; }
         }
 
-        /* ========== МОДАЛЬНОЕ ОКНО С ФИКСИРОВАННЫМ КРЕСТИКОМ ========== */
+        /* ========== АДМИН-ПАНЕЛЬ (СКРЫТА) ========== */
+        .admin-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 1rem 1.2rem;
+            z-index: 1000;
+            border: 1px solid #ffe0e0;
+            max-width: 280px;
+            transition: 0.2s;
+            font-size: 0.85rem;
+            display: none;
+        }
+        .admin-panel.show {
+            display: block;
+        }
+        .admin-panel h4 {
+            color: #b22222;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        .admin-stats {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+        }
+        .admin-stats span {
+            font-weight: 700;
+            color: #b22222;
+        }
+        .admin-btn {
+            background: #fee8e8;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: 0.1s;
+        }
+        .admin-btn:hover {
+            background: #fad0d0;
+        }
+        .admin-hint {
+            font-size: 0.65rem;
+            color: #888;
+            margin-top: 0.5rem;
+            border-top: 1px solid #eee;
+            padding-top: 0.5rem;
+        }
+
+        /* ========== МОДАЛЬНОЕ ОКНО ========== */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -736,7 +784,7 @@
             font-size: 0.85rem;
         }
         @media print {
-            .micro-btn, .modal-overlay, .lang-switcher, .language-menu, .lang-overlay, .click-hint { display: none; }
+            .micro-btn, .modal-overlay, .lang-switcher, .language-menu, .lang-overlay, .click-hint, .admin-panel { display: none; }
             .hero { background: #b22222; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .card { break-inside: avoid; border: 1px solid #ccc; }
             .store-link { text-decoration: none; color: black; border: 1px solid #ccc; }
@@ -900,6 +948,17 @@
     </div>
 </div>
 
+<!-- АДМИН-ПАНЕЛЬ (отображается по Ctrl+Shift+S) -->
+<div id="adminPanel" class="admin-panel">
+    <h4><i class="fas fa-chart-simple"></i> Статистика (админ)</h4>
+    <div class="admin-stats">
+        <div>📊 Посещений страницы: <span id="visitCount">0</span></div>
+        <div>🏆 Успешных прохождений теста: <span id="testCompleteCount">0</span></div>
+    </div>
+    <button id="resetStatsBtn" class="admin-btn">Сбросить счётчики</button>
+    <div class="admin-hint">🔒 Нажмите Ctrl+Shift+S, чтобы закрыть</div>
+</div>
+
 <div id="quizModal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
@@ -988,85 +1047,152 @@ const translations = {
   }
 };
 
+// ========== СЧЁТЧИКИ (локальное хранилище) ==========
+let visitCount = 0;
+let testCompleteCount = 0;
+let completionFlag = false; // флаг для предотвращения двойного засчитывания одного прохождения
+
+function loadCounters() {
+    visitCount = parseInt(localStorage.getItem('parking_visit_count')) || 0;
+    testCompleteCount = parseInt(localStorage.getItem('parking_test_complete')) || 0;
+    document.getElementById('visitCount').innerText = visitCount;
+    document.getElementById('testCompleteCount').innerText = testCompleteCount;
+}
+
+function incrementVisit() {
+    visitCount++;
+    localStorage.setItem('parking_visit_count', visitCount);
+    document.getElementById('visitCount').innerText = visitCount;
+}
+
+function incrementTestComplete() {
+    testCompleteCount++;
+    localStorage.setItem('parking_test_complete', testCompleteCount);
+    document.getElementById('testCompleteCount').innerText = testCompleteCount;
+}
+
+function resetCounters() {
+    if (confirm('Сбросить все счётчики? Отменить действие будет нельзя.')) {
+        visitCount = 0;
+        testCompleteCount = 0;
+        localStorage.setItem('parking_visit_count', 0);
+        localStorage.setItem('parking_test_complete', 0);
+        document.getElementById('visitCount').innerText = 0;
+        document.getElementById('testCompleteCount').innerText = 0;
+    }
+}
+
+// ========== АДМИН-ПАНЕЛЬ ==========
+const adminPanel = document.getElementById('adminPanel');
+let panelVisible = false;
+
+function toggleAdminPanel() {
+    panelVisible = !panelVisible;
+    if (panelVisible) {
+        adminPanel.classList.add('show');
+    } else {
+        adminPanel.classList.remove('show');
+    }
+}
+
+// Слушатель сочетания Ctrl+Shift+S
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.code === 'KeyS') {
+        e.preventDefault();
+        toggleAdminPanel();
+    }
+});
+
+// Сброс статистики по кнопке
+document.getElementById('resetStatsBtn').addEventListener('click', resetCounters);
+
+// ========== ТЕСТОВАЯ ЛОГИКА ==========
 let currentLang = 'ru';
 let quizUserSelections = new Array(5).fill(null);
 let currentQuizData = null;
 
 function updateQuizData(lang) {
-  const t = translations[lang];
-  currentQuizData = [
-    { text: t.quiz_q1, options: t.quiz_q1_opts, correct: 1, explanation: t.quiz_q1_correct_expl },
-    { text: t.quiz_q2, options: t.quiz_q2_opts, correct: 1, explanation: t.quiz_q2_correct_expl },
-    { text: t.quiz_q3, options: t.quiz_q3_opts, correct: 1, explanation: t.quiz_q3_correct_expl },
-    { text: t.quiz_q4, options: t.quiz_q4_opts, correct: 1, explanation: t.quiz_q4_correct_expl },
-    { text: t.quiz_q5, options: t.quiz_q5_opts, correct: 1, explanation: t.quiz_q5_correct_expl }
-  ];
+    const t = translations[lang];
+    currentQuizData = [
+        { text: t.quiz_q1, options: t.quiz_q1_opts, correct: 1, explanation: t.quiz_q1_correct_expl },
+        { text: t.quiz_q2, options: t.quiz_q2_opts, correct: 1, explanation: t.quiz_q2_correct_expl },
+        { text: t.quiz_q3, options: t.quiz_q3_opts, correct: 1, explanation: t.quiz_q3_correct_expl },
+        { text: t.quiz_q4, options: t.quiz_q4_opts, correct: 1, explanation: t.quiz_q4_correct_expl },
+        { text: t.quiz_q5, options: t.quiz_q5_opts, correct: 1, explanation: t.quiz_q5_correct_expl }
+    ];
 }
 
 function renderQuiz() {
-  if (!currentQuizData) updateQuizData(currentLang);
-  const container = document.getElementById('quizContainer');
-  if (!container) return;
-  let html = '';
-  currentQuizData.forEach((q, idx) => {
-    html += `<div class="quiz-question" data-qidx="${idx}"><p>${idx+1}. ${q.text}</p>`;
-    q.options.forEach((opt, optIdx) => {
-      const checked = (quizUserSelections[idx] === optIdx) ? 'checked' : '';
-      html += `<div class="quiz-option"><input type="radio" name="q${idx}" value="${optIdx}" id="q${idx}_${optIdx}" ${checked}><label for="q${idx}_${optIdx}">${opt}</label></div>`;
+    if (!currentQuizData) updateQuizData(currentLang);
+    const container = document.getElementById('quizContainer');
+    if (!container) return;
+    let html = '';
+    currentQuizData.forEach((q, idx) => {
+        html += `<div class="quiz-question" data-qidx="${idx}"><p>${idx+1}. ${q.text}</p>`;
+        q.options.forEach((opt, optIdx) => {
+            const checked = (quizUserSelections[idx] === optIdx) ? 'checked' : '';
+            html += `<div class="quiz-option"><input type="radio" name="q${idx}" value="${optIdx}" id="q${idx}_${optIdx}" ${checked}><label for="q${idx}_${optIdx}">${opt}</label></div>`;
+        });
+        html += `</div>`;
     });
-    html += `</div>`;
-  });
-  container.innerHTML = html;
-  for (let i = 0; i < currentQuizData.length; i++) {
-    const radios = document.querySelectorAll(`input[name="q${i}"]`);
-    radios.forEach(radio => {
-      radio.addEventListener('change', (e) => { quizUserSelections[i] = parseInt(e.target.value); });
-    });
-  }
+    container.innerHTML = html;
+    for (let i = 0; i < currentQuizData.length; i++) {
+        const radios = document.querySelectorAll(`input[name="q${i}"]`);
+        radios.forEach(radio => {
+            radio.addEventListener('change', (e) => { quizUserSelections[i] = parseInt(e.target.value); });
+        });
+    }
 }
 
 function resetQuiz() {
-  quizUserSelections = new Array(5).fill(null);
-  renderQuiz();
-  document.getElementById('quizResult').style.display = 'none';
-  for (let i = 0; i < currentQuizData.length; i++) {
-    document.querySelectorAll(`input[name="q${i}"]`).forEach(r => r.checked = false);
-  }
+    quizUserSelections = new Array(5).fill(null);
+    renderQuiz();
+    document.getElementById('quizResult').style.display = 'none';
+    for (let i = 0; i < currentQuizData.length; i++) {
+        document.querySelectorAll(`input[name="q${i}"]`).forEach(r => r.checked = false);
+    }
+    completionFlag = false;
 }
 
 function checkAnswers() {
-  let score = 0;
-  const t = translations[currentLang];
-  let resultsHtml = `<strong>${t.quiz_check}:</strong><ul>`;
-  for (let i = 0; i < currentQuizData.length; i++) {
-    const selected = quizUserSelections[i];
-    const isCorrect = (selected === currentQuizData[i].correct);
-    if (isCorrect) score++;
-    const status = isCorrect ? '✅' : '❌';
-    resultsHtml += `<li>${status} Вопрос ${i+1}: ${isCorrect ? '✅' : '❌'}. ${!isCorrect ? `<span class="correct-answer">${t.quiz_q1_correct_expl.includes('Правильный') ? 'Правильный ответ' : 'Туура жооп'}: ${currentQuizData[i].options[currentQuizData[i].correct]}</span>. ` : ''}${currentQuizData[i].explanation}</li>`;
-  }
-  resultsHtml += `</ul><p><strong>${t.quiz_result_label || 'Итог'}: ${score} из ${currentQuizData.length}</strong> ${score === currentQuizData.length ? '🎉 Отлично!' : (t.quiz_retry_hint || 'Повторите памятку и пройдите тест ещё раз.')}</p>`;
-  const resultDiv = document.getElementById('quizResult');
-  resultDiv.innerHTML = resultsHtml;
-  resultDiv.style.display = 'block';
+    let score = 0;
+    const t = translations[currentLang];
+    let resultsHtml = `<strong>${t.quiz_check}:</strong><ul>`;
+    for (let i = 0; i < currentQuizData.length; i++) {
+        const selected = quizUserSelections[i];
+        const isCorrect = (selected === currentQuizData[i].correct);
+        if (isCorrect) score++;
+        const status = isCorrect ? '✅' : '❌';
+        resultsHtml += `<li>${status} Вопрос ${i+1}: ${isCorrect ? '✅' : '❌'}. ${!isCorrect ? `<span class="correct-answer">${t.quiz_q1_correct_expl.includes('Правильный') ? 'Правильный ответ' : 'Туура жооп'}: ${currentQuizData[i].options[currentQuizData[i].correct]}</span>. ` : ''}${currentQuizData[i].explanation}</li>`;
+    }
+    resultsHtml += `</ul><p><strong>${t.quiz_result_label || 'Итог'}: ${score} из ${currentQuizData.length}</strong> ${score === currentQuizData.length ? '🎉 Отлично!' : (t.quiz_retry_hint || 'Повторите памятку и пройдите тест ещё раз.')}</p>`;
+    const resultDiv = document.getElementById('quizResult');
+    resultDiv.innerHTML = resultsHtml;
+    resultDiv.style.display = 'block';
+    
+    // Учёт успешного прохождения теста (если все ответы правильные и флаг ещё не поднят)
+    if (score === currentQuizData.length && !completionFlag) {
+        incrementTestComplete();
+        completionFlag = true;
+    }
 }
 
 function setLanguage(lang) {
-  currentLang = lang;
-  const t = translations[lang];
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (t[key] !== undefined) {
-      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.value = t[key];
-      else el.innerHTML = t[key];
-    }
-  });
-  updateQuizData(lang);
-  if (document.getElementById('quizModal').classList.contains('active')) resetQuiz();
-  else renderQuiz();
-  document.querySelector('#quizModal .modal-header h3 span').innerHTML = t.quiz_title;
-  document.querySelector('#checkQuizBtn').innerHTML = t.quiz_check;
-  document.querySelector('#retakeQuizBtn').innerHTML = t.quiz_retake;
+    currentLang = lang;
+    const t = translations[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.value = t[key];
+            else el.innerHTML = t[key];
+        }
+    });
+    updateQuizData(lang);
+    if (document.getElementById('quizModal').classList.contains('active')) resetQuiz();
+    else renderQuiz();
+    document.querySelector('#quizModal .modal-header h3 span').innerHTML = t.quiz_title;
+    document.querySelector('#checkQuizBtn').innerHTML = t.quiz_check;
+    document.querySelector('#retakeQuizBtn').innerHTML = t.quiz_retake;
 }
 
 // Бургер-меню логика
@@ -1075,40 +1201,40 @@ const langMenu = document.getElementById('languageMenu');
 const overlay = document.getElementById('langOverlay');
 
 function closeMenu() {
-  burger.classList.remove('open');
-  langMenu.classList.remove('active');
-  overlay.classList.remove('active');
+    burger.classList.remove('open');
+    langMenu.classList.remove('active');
+    overlay.classList.remove('active');
 }
 
 function openMenu() {
-  burger.classList.add('open');
-  langMenu.classList.add('active');
-  overlay.classList.add('active');
+    burger.classList.add('open');
+    langMenu.classList.add('active');
+    overlay.classList.add('active');
 }
 
 burger.addEventListener('click', (e) => {
-  e.stopPropagation();
-  if (langMenu.classList.contains('active')) {
-    closeMenu();
-  } else {
-    openMenu();
-  }
+    e.stopPropagation();
+    if (langMenu.classList.contains('active')) {
+        closeMenu();
+    } else {
+        openMenu();
+    }
 });
 
 overlay.addEventListener('click', closeMenu);
 
 document.querySelectorAll('.lang-option').forEach(opt => {
-  opt.addEventListener('click', (e) => {
-    const lang = opt.getAttribute('data-lang');
-    setLanguage(lang);
-    closeMenu();
-  });
+    opt.addEventListener('click', (e) => {
+        const lang = opt.getAttribute('data-lang');
+        setLanguage(lang);
+        closeMenu();
+    });
 });
 
 document.addEventListener('click', (e) => {
-  if (!burger.contains(e.target) && !langMenu.contains(e.target)) {
-    closeMenu();
-  }
+    if (!burger.contains(e.target) && !langMenu.contains(e.target)) {
+        closeMenu();
+    }
 });
 
 const modal = document.getElementById('quizModal');
@@ -1118,6 +1244,9 @@ modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList
 document.getElementById('checkQuizBtn').addEventListener('click', checkAnswers);
 document.getElementById('retakeQuizBtn').addEventListener('click', () => { resetQuiz(); document.getElementById('quizResult').style.display = 'none'; });
 
+// Инициализация
+loadCounters();
+incrementVisit();   // при каждом открытии страницы увеличиваем счётчик посещений
 setLanguage('ru');
 renderQuiz();
 </script>
