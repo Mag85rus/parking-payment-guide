@@ -47,7 +47,7 @@
             align-items: center;
             gap: 12px;
             flex-wrap: wrap;
-            padding-right: 70px;
+            padding-right: 120px;
         }
         .hero h1 i {
             background: rgba(255,255,255,0.2);
@@ -90,17 +90,33 @@
             background: rgba(255,255,255,0.3);
         }
 
-        /* ========== БУРГЕР-ИКОНКА ========== */
-        #nav-icon2 {
-            width: 44px;
-            height: 34px;
+        /* ========== БУРГЕР-ИКОНКА + НАДПИСЬ "ЯЗЫК" ========== */
+        .lang-switcher {
             position: absolute;
             top: 1.2rem;
             right: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 101;
+        }
+        .lang-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: white;
+            background: rgba(255,255,255,0.2);
+            padding: 0.3rem 0.7rem;
+            border-radius: 40px;
+            backdrop-filter: blur(2px);
+            white-space: nowrap;
+        }
+        #nav-icon2 {
+            width: 44px;
+            height: 34px;
             transform: rotate(0deg);
             transition: .5s ease-in-out;
             cursor: pointer;
-            z-index: 100;
+            position: relative;
         }
         #nav-icon2 span {
             display: block;
@@ -551,6 +567,64 @@
                 100% { transform: scale(1); box-shadow: 0 4px 12px rgba(178, 34, 34, 0.3); }
             }
         }
+        /* Адаптация для мобильных: надпись "Язык" */
+        @media (max-width: 640px) {
+            .lang-switcher {
+                top: 1rem;
+                right: 1rem;
+                gap: 6px;
+            }
+            .lang-label {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.5rem;
+            }
+            #nav-icon2 {
+                width: 32px;
+                height: 26px;
+            }
+            #nav-icon2 span {
+                height: 3px;
+            }
+            #nav-icon2 span:nth-child(3), 
+            #nav-icon2 span:nth-child(4) { top: 9px; }
+            #nav-icon2 span:nth-child(5), 
+            #nav-icon2 span:nth-child(6) { top: 18px; }
+            #nav-icon2.open span:nth-child(1) {
+                left: 3px;
+                top: 4px;
+            }
+            #nav-icon2.open span:nth-child(2) {
+                left: calc(50% - 3px);
+                top: 4px;
+            }
+            #nav-icon2.open span:nth-child(5) {
+                left: 3px;
+                top: 14px;
+            }
+            #nav-icon2.open span:nth-child(6) {
+                left: calc(50% - 3px);
+                top: 14px;
+            }
+            .language-menu {
+                top: 55px;
+                right: 1rem;
+                min-width: 85px;
+            }
+            .lang-option {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+            .hero h1 {
+                padding-right: 95px;
+            }
+        }
+        @media (min-width: 768px) {
+            .hero h1 { font-size: 2rem; padding-right: 150px; }
+            .hero p { font-size: 1rem; max-width: 80%; }
+            .methods-grid { gap: 1.5rem; }
+            .card-header h2 { font-size: 1.3rem; }
+            .content { padding: 2rem; }
+        }
 
         /* ========== МОДАЛЬНОЕ ОКНО С ФИКСИРОВАННЫМ КРЕСТИКОМ ========== */
         .modal-overlay {
@@ -661,44 +735,8 @@
             margin-top: 1rem;
             font-size: 0.85rem;
         }
-
-        @media (min-width: 768px) {
-            .hero h1 { font-size: 2rem; padding-right: 70px; }
-            .hero p { font-size: 1rem; max-width: 80%; }
-            .methods-grid { gap: 1.5rem; }
-            .card-header h2 { font-size: 1.3rem; }
-            .content { padding: 2rem; }
-            #nav-icon2 {
-                width: 50px;
-                height: 38px;
-                top: 1.5rem;
-                right: 1.5rem;
-            }
-        }
-        @media (max-width: 640px) {
-            .hero { padding: 1.5rem; }
-            .hero h1 { font-size: 1.5rem; padding-right: 55px; }
-            #nav-icon2 {
-                width: 38px;
-                height: 30px;
-                top: 1rem;
-                right: 1rem;
-            }
-            #nav-icon2 span { height: 3px; }
-            #nav-icon2 span:nth-child(3), #nav-icon2 span:nth-child(4) { top: 10px; }
-            #nav-icon2 span:nth-child(5), #nav-icon2 span:nth-child(6) { top: 20px; }
-            .language-menu {
-                top: 60px;
-                right: 1rem;
-                min-width: 85px;
-            }
-            .lang-option {
-                padding: 0.5rem 1rem;
-                font-size: 0.8rem;
-            }
-        }
         @media print {
-            .micro-btn, .modal-overlay, #nav-icon2, .language-menu, .lang-overlay, .click-hint { display: none; }
+            .micro-btn, .modal-overlay, .lang-switcher, .language-menu, .lang-overlay, .click-hint { display: none; }
             .hero { background: #b22222; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .card { break-inside: avoid; border: 1px solid #ccc; }
             .store-link { text-decoration: none; color: black; border: 1px solid #ccc; }
@@ -708,14 +746,17 @@
 <body>
 <div class="container">
     <div class="hero">
-        <!-- Бургер-иконка для выбора языка -->
-        <div id="nav-icon2">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+        <!-- Бургер-иконка с надписью "Язык" -->
+        <div class="lang-switcher">
+            <span class="lang-label" data-i18n="lang_label">Язык</span>
+            <div id="nav-icon2">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
         <!-- Выпадающая панель языков -->
         <div class="language-menu" id="languageMenu">
@@ -852,7 +893,7 @@
                     <button class="micro-btn" id="openQuizBtn"><i class="fas fa-fire"></i> <span data-i18n="quiz_btn">🔥 Проверь себя!</span> <i class="fas fa-arrow-right"></i></button>
                 </div>
                 <div class="click-hint" data-i18n="click_hint">
-                    <i class="fas fa-hand-pointer"></i> Нажми, чтобы пройти мини-тест
+                    <i class="fas fa-hand-pointer"></i> Нажми, Проверь себя, чтобы пройти мини-тест
                 </div>
             </div>
         </div>
@@ -875,6 +916,7 @@
 // ===================== TRANSLATIONS =====================
 const translations = {
   ru: {
+    lang_label: "Язык",
     hero_title: "Оплата парковки", hero_sub: "Быстро, удобно и без штрафов. Выберите подходящий способ оплаты уличных парковок.",
     badge1: "Поминутная тарификация", badge2: "Возврат за неиспользованное время", badge3: "QR‑код на щитах",
     payment_methods_title: "Способы оплаты",
@@ -883,7 +925,7 @@ const translations = {
     card_blitz_title: "Блиц‑приложение", blitz_step1: "Отсканируйте QR‑код на информационном щите в начале зоны.", blitz_step2: "Введите номер парковки (или нажмите автоопределение) + ГРЗ.", blitz_step3: "Выберите время, введите телефон и код из СМС.", blitz_step4: "Оплатите картой или через СБП.", blitz_warning: "Без продления и изменения сессии. Для полного функционала скачайте основное приложение «Парковки России».", blitz_image_caption: "📱 Сканируйте QR-код на щите для быстрой оплаты",
     card_sms_title: "СМС на 7757", offline_badge: "Без интернета", sms_format_label: "Формат для старта:", sms_explain: "где 1004 — номер зоны, А123АА199 — ГРЗ, 3 — часы (1–24).", sms_extend_label: "Продление", sms_extend_desc: "(на 2 часа)", sms_stop_label: "Досрочная остановка", sms_or: "или", sms_warning: "Если на парковочном счету недостаточно средств, придёт СМС с подтверждением списания со счёта телефона (кроме Tele2). Комиссию уточняйте у оператора.", sms_tariff: "Поминутная тарификация: при досрочном завершении деньги возвращаются на парковочный счёт.",
     card_voice_title: "Голосовой сервис", voice_call: "Позвоните:", voice_step2: "Скажите «Оплатить парковку голосом» роботу.", voice_step3: "Назовите ГРЗ автомобиля, номер зоны и время. Система повторит → подтвердите.", voice_warning: "Продлить или завершить можно повторным звонком либо через СМС с командой <span class=\"inline-code\">S</span>.",
-    footer_important: "Важно: поминутная тарификация во всех способах", footer_refund: "✅ Если завершить парковку досрочно, деньги за неиспользованное время <strong>сохраняются на парковочном счёте</strong> и доступны для будущих сессий. При оплате через СМС возврат идёт на счёт мобильного (согласно условиям оператора).", contact_center: "Единый контакт-центр «Московский транспорт»:", operators: "Операторы: Мегафон, МТС, билайн, Tele2 (условия оплаты могут отличаться)", legal: "Порядок мобильных платежей по законодательству РФ", blitz_note_title: "Блиц-оплата без установки:", blitz_note_text: "отсканируйте QR на щите — откроется быстрая форма. Продление и изменение доступны только в полной версии приложения.", city_note: "Сервис работает в Москве, Московской области и других регионах присутствия", quiz_btn: "🔥 Проверь себя!", click_hint: "👉 Нажми, чтобы пройти мини-тест", quiz_title: "Проверь свои знания", quiz_check: "Проверить ответы", quiz_retake: "Пройти заново",
+    footer_important: "Важно: поминутная тарификация во всех способах", footer_refund: "✅ Если завершить парковку досрочно, деньги за неиспользованное время <strong>сохраняются на парковочном счёте</strong> и доступны для будущих сессий. При оплате через СМС возврат идёт на счёт мобильного (согласно условиям оператора).", contact_center: "Единый контакт-центр «Московский транспорт»:", operators: "Операторы: Мегафон, МТС, билайн, Tele2 (условия оплаты могут отличаться)", legal: "Порядок мобильных платежей по законодательству РФ", blitz_note_title: "Блиц-оплата без установки:", blitz_note_text: "отсканируйте QR на щите — откроется быстрая форма. Продление и изменение доступны только в полной версии приложения.", city_note: "Сервис работает в Москве, Московской области и других регионах присутствия", quiz_btn: "🔥 Проверь себя!", click_hint: "Нажми, Проверь себя, чтобы пройти мини-тест", quiz_title: "Проверь свои знания", quiz_check: "Проверить ответы", quiz_retake: "Пройти заново",
     quiz_q1: "Какие способы оплаты парковки работают даже без доступа к интернету?", quiz_q1_opts: ["Мобильное приложение «Парковки России»","СМС на номер 7757 и голосовой сервис","Личный кабинет на parking.mos.ru","Блиц-приложение по QR-коду"], quiz_q1_correct_expl: "СМС на 7757 и голосовой сервис (звонок 3210) не требуют интернета.",
     quiz_q2: "Что означает аббревиатура ГРЗ?", quiz_q2_opts: ["Городская разрешительная зона","Государственный регистрационный номер","График работы зоны","Главный расчётный знак"], quiz_q2_correct_expl: "ГРЗ — государственный регистрационный номер автомобиля.",
     quiz_q3: "Как досрочно завершить парковку, если вы оплатили её через СМС?", quiz_q3_opts: ["Отправить СМС с текстом STOP","Отправить СМС с командой S или С на номер 7757","Позвонить на 112","Завершить парковку нельзя, только ждать окончания времени"], quiz_q3_correct_expl: "Для досрочной остановки через СМС отправьте букву S или С на номер 7757. Деньги за неиспользованное время вернутся.",
@@ -891,6 +933,7 @@ const translations = {
     quiz_q5: "Где можно скачать приложение «Парковки России»?", quiz_q5_opts: ["Только через QR-код на информационных щитах","В App Store, Google Play и по QR-коду на щитах","Только на сайте parking.mos.ru","Приложение нельзя скачать, оно встроено в браузер"], quiz_q5_correct_expl: "Приложение доступно в официальных магазинах приложений (App Store, Google Play) и по QR-коду на информационных щитах."
   },
   kg: {
+    lang_label: "Тил",
     hero_title: "Унаа токтотууну төлөө", hero_sub: "Тез, ыңгайлуу жана айыпсыз. Көчөдөгү унаа токтотуу жайларын төлөөнүн ылайыктуу жолун тандаңыз.",
     badge1: "Мүнөтүнө эсептөө", badge2: "Пайдаланылбаган убакыт үчүн кайтарым", badge3: "QR‑код такталарда",
     payment_methods_title: "Төлөм жолдору", card_lk_title: "Жеке кабинет",
@@ -900,7 +943,7 @@ const translations = {
     card_blitz_title: "Блиц‑колдонмо", blitz_step1: "Зонанын башындагы маалымат тактасындагы QR‑кодду сканерлеңиз.", blitz_step2: "Унаа токтотуунун номерин (же автоаныктаманы басып) + ГРЗ киргизиңиз.", blitz_step3: "Убакытты тандап, телефон номериңизди жана СМС кодуңузду киргизиңиз.", blitz_step4: "Карта же СБП аркылуу төлөңүз.", blitz_warning: "Узартуу же өзгөртүү жок. Толук функционал үчүн «Парковки России» негизги колдонмосун жүктөп алыңыз.", blitz_image_caption: "📱 Щиттеги QR-кодду тез төлөө үчүн сканерлеңиз",
     card_sms_title: "7757 номерине СМС", offline_badge: "Интернетсиз", sms_format_label: "Баштоо форматы:", sms_explain: "мында 1004 — зона номери, А123АА199 — ГРЗ, 3 — саат (1–24).", sms_extend_label: "Узартуу", sms_extend_desc: "(2 саатка)", sms_stop_label: "Мөөнөтүнөн мурда токтотуу", sms_or: "же", sms_warning: "Эгер виртуалдык эсепте каражат жетишсиз болсо, телефон эсебинен төлөөнү ырастоо үчүн СМС келет (Tele2ден башка). Комиссияны операторуңуздан тактаңыз.", sms_tariff: "Мүнөтүнө эсептөө: мөөнөтүнөн мурда бүтүрсөңүз, акча унаа токтотуу эсебине кайтарылат.",
     card_voice_title: "Үн сервиси", voice_call: "Чалуу:", voice_step2: "Роботко «Унаа токтотууну үн менен төлөө» деңиз.", voice_step3: "Унаанын ГРЗ, зона номерин жана убакытты айтыңыз. Система кайталайт → ырастаңыз.", voice_warning: "Узартуу же бүтүрүү үчүн кайра чалыңыз же <span class=\"inline-code\">S</span> буйругу менен СМС жөнөтүңүз.",
-    footer_important: "Маанилүү: бардык ыкмаларда мүнөтүнө эсептөө", footer_refund: "✅ Эгер унаа токтотууну мөөнөтүнөн мурда бүтүрсөңүз, пайдаланылбаган убакыт үчүн акча <strong>парковкалык эсепте сакталат</strong> жана кийинки сессияларга колдонулат. СМС аркылуу төлөгөндө кайтарым телефон эсебине келет (оператордун шарттарына жараша).", contact_center: "Бирдиктүү байланыш борбору «Московский транспорт»:", operators: "Операторлор: Мегафон, МТС, билайн, Tele2 (төлөм шарттары айырмаланышы мүмкүн)", legal: "Мобилдик төлөмдөрдүн тартиби РФ мыйзамдарына ылайык", blitz_note_title: "Орнотуусуз блиц-төлөм:", blitz_note_text: "тактадагы QR кодун сканерлеңиз — тез форма ачылат. Узартуу жана өзгөртүү толук колдонмодо гана жеткиликтүү.", city_note: "Кызмат Москвада, Москва облусунда жана башка аймактарда иштейт", quiz_btn: "🔥 Өзүңдү текшер!", click_hint: "👉 Мини-тестти өтүү үчүн бас", quiz_title: "Билимиңизди текшериңиз", quiz_check: "Жоопторду текшерүү", quiz_retake: "Кайра өтүү",
+    footer_important: "Маанилүү: бардык ыкмаларда мүнөтүнө эсептөө", footer_refund: "✅ Эгер унаа токтотууну мөөнөтүнөн мурда бүтүрсөңүз, пайдаланылбаган убакыт үчүн акча <strong>парковкалык эсепте сакталат</strong> жана кийинки сессияларга колдонулат. СМС аркылуу төлөгөндө кайтарым телефон эсебине келет (оператордун шарттарына жараша).", contact_center: "Бирдиктүү байланыш борбору «Московский транспорт»:", operators: "Операторлор: Мегафон, МТС, билайн, Tele2 (төлөм шарттары айырмаланышы мүмкүн)", legal: "Мобилдик төлөмдөрдүн тартиби РФ мыйзамдарына ылайык", blitz_note_title: "Орнотуусуз блиц-төлөм:", blitz_note_text: "тактадагы QR кодун сканерлеңиз — тез форма ачылат. Узартуу жана өзгөртүү толук колдонмодо гана жеткиликтүү.", city_note: "Кызмат Москвада, Москва облусунда жана башка аймактарда иштейт", quiz_btn: "🔥 Өзүңдү текшер!", click_hint: "Бас, Өзүңдү текшер, мини-тестти өтүү үчүн", quiz_title: "Билимиңизди текшериңиз", quiz_check: "Жоопторду текшерүү", quiz_retake: "Кайра өтүү",
     quiz_q1: "Интернетке кирүү мүмкүнчүлүгү жок болсо да кайсы төлөм жолдору иштейт?", quiz_q1_opts: ["«Парковки России» колдонмосу","7757 номерине СМС жана үн сервиси","parking.mos.ru жеке кабинети","QR-код аркылуу блиц-колдонмо"], quiz_q1_correct_expl: "7757ге СМС жана үн сервиси (3210 чалуу) интернетти талап кылбайт.",
     quiz_q2: "ГРЗ аббревиатурасы эмнени билдирет?", quiz_q2_opts: ["Шаардык уруксат берүү аймагы","Мамлекеттик каттоо номери","Аймактын иш графиги","Башкы эсептегич белги"], quiz_q2_correct_expl: "ГРЗ — мамлекеттик каттоо номери.",
     quiz_q3: "Эгер сиз парковканы СМС аркылуу төлөсөңүз, аны мөөнөтүнөн мурда кантип бүтүрөсүз?", quiz_q3_opts: ["STOP деген СМС жөнөтүү","7757 номерине S же С буйругу менен СМС жөнөтүү","112ге чалуу","Парковканы бүтүрүү мүмкүн эмес, убакытты күтүңүз"], quiz_q3_correct_expl: "Мөөнөтүнөн мурда бүтүрүү үчүн 7757ге S же С тамгасын жөнөтүңүз. Пайдаланылбаган убакыт үчүн акча кайтарылат.",
@@ -908,6 +951,7 @@ const translations = {
     quiz_q5: "«Парковки России» колдонмосун кайдан жүктөп алса болот?", quiz_q5_opts: ["Тек гана QR-код аркылуу такталардан","App Store, Google Play жана такталардагы QR-код аркылуу","Тек гана parking.mos.ru сайтында","Колдонмону жүктөө мүмкүн эмес, ал браузерге орнотулган"], quiz_q5_correct_expl: "Колдонмо App Store, Google Play расмий дүкөндөрүндө жана маалымат такталарындагы QR-код аркылуу жеткиликтүү."
   },
   uz: {
+    lang_label: "Til",
     hero_title: "Avtoturargoh to‘lovi", hero_sub: "Tez, qulay va jarimasiz. Ko‘cha avtoturargohlarini to‘lashning mos usulini tanlang.",
     badge1: "Daqiqali tarif", badge2: "Foydalanilmagan vaqt uchun qaytarish", badge3: "Shitlardagi QR‑kod",
     payment_methods_title: "To‘lov usullari", card_lk_title: "Shaxsiy kabinet",
@@ -917,7 +961,7 @@ const translations = {
     card_blitz_title: "Blits‑ilova", blitz_step1: "Zona boshidagi axborot shitidagi QR‑kodni skanerlang.", blitz_step2: "Avtoturargoh raqamini (yoki avtoaniqlashni bosib) + GRZ ni kiriting.", blitz_step3: "Vaqtni tanlang, telefon raqami va SMS kodini kiriting.", blitz_step4: "Karta yoki TIZ (SBP) orqali to‘lang.", blitz_warning: "Uzaytirish va o‘zgartirish yo‘q. To‘liq funksiya uchun «Парковки России» asosiy ilovasini yuklab oling.", blitz_image_caption: "📱 Tez to‘lov uchun shitdagi QR-kodni skanerlang",
     card_sms_title: "7757 ga SMS", offline_badge: "Internetsiz", sms_format_label: "Boshlash formati:", sms_explain: "bu yerda 1004 — zona raqami, А123АА199 — GRZ, 3 — soat (1–24).", sms_extend_label: "Uzaytirish", sms_extend_desc: "(2 soatga)", sms_stop_label: "Muddatidan oldin to‘xtatish", sms_or: "yoki", sms_warning: "Agar virtual hisobda mablag‘ yetarli bo‘lmasa, telefon hisobidan to‘lovni tasdiqlash uchun SMS keladi (Tele2 dan tashqari). Komissiyani operatoringizdan aniqlang.", sms_tariff: "Daqiqali tarif: muddatidan oldin tugatsangiz, pul avtoturargoh hisobiga qaytariladi.",
     card_voice_title: "Ovozli xizmat", voice_call: "Qo‘ng‘iroq qiling:", voice_step2: "Roborga «Avtoturargohni ovoz bilan to‘lash» deb ayting.", voice_step3: "Avtomobilning GRZ, zona raqami va vaqtni ayting. Tizim takrorlaydi → tasdiqlang.", voice_warning: "Uzaytirish yoki tugatish uchun qayta qo‘ng‘iroq qiling yoki <span class=\"inline-code\">S</span> buyrug‘i bilan SMS yuboring.",
-    footer_important: "Muhim: barcha usullarda daqiqali tarif", footer_refund: "✅ Agar avtoturargohni muddatidan oldin tugatsangiz, foydalanilmagan vaqt uchun pul <strong>avtoturargoh hisobida saqlanadi</strong> va keyingi seanslar uchun ishlatiladi. SMS orqali to‘lovda qaytarim telefon hisobiga tushadi (operator shartlariga ko‘ra).", contact_center: "«Moskva transporti» yagona aloqa markazi:", operators: "Operatorlar: Megafon, MTS, Beeline, Tele2 (to‘lov shartlari farq qilishi mumkin)", legal: "Mobil to‘lovlar tartibi RF qonunchiligiga muvofiq", blitz_note_title: "O‘rnatmasiz blits-to‘lov:", blitz_note_text: "shitdagi QR kodni skanerlang — tezkor forma ochiladi. Uzaytirish va o‘zgartirish faqat to‘liq ilovada mavjud.", city_note: "Xizmat Moskva, Moskva viloyati va boshqa hududlarda ishlaydi", quiz_btn: "🔥 O‘zingni sinab ko‘r!", click_hint: "👉 Mini-testni boshlash uchun bosing", quiz_title: "Bilimingizni sinab ko‘ring", quiz_check: "Javoblarni tekshirish", quiz_retake: "Qayta o‘tish",
+    footer_important: "Muhim: barcha usullarda daqiqali tarif", footer_refund: "✅ Agar avtoturargohni muddatidan oldin tugatsangiz, foydalanilmagan vaqt uchun pul <strong>avtoturargoh hisobida saqlanadi</strong> va keyingi seanslar uchun ishlatiladi. SMS orqali to‘lovda qaytarim telefon hisobiga tushadi (operator shartlariga ko‘ra).", contact_center: "«Moskva transporti» yagona aloqa markazi:", operators: "Operatorlar: Megafon, MTS, Beeline, Tele2 (to‘lov shartlari farq qilishi mumkin)", legal: "Mobil to‘lovlar tartibi RF qonunchiligiga muvofiq", blitz_note_title: "O‘rnatmasiz blits-to‘lov:", blitz_note_text: "shitdagi QR kodni skanerlang — tezkor forma ochiladi. Uzaytirish va o‘zgartirish faqat to‘liq ilovada mavjud.", city_note: "Xizmat Moskva, Moskva viloyati va boshqa hududlarda ishlaydi", quiz_btn: "🔥 O‘zingni sinab ko‘r!", click_hint: "Bosing, O‘zingni sinab ko‘r, mini-testni boshlash uchun", quiz_title: "Bilimingizni sinab ko‘ring", quiz_check: "Javoblarni tekshirish", quiz_retake: "Qayta o‘tish",
     quiz_q1: "Internetga kirish imkoni bo‘lmagan taqdirda ham qaysi to‘lov usullari ishlaydi?", quiz_q1_opts: ["«Парковки России» ilovasi","7757 ga SMS va ovozli xizmat","parking.mos.ru shaxsiy kabineti","QR-kod orqali blits-ilova"], quiz_q1_correct_expl: "7757 ga SMS va ovozli xizmat (3210 qo‘ng‘iroq) internetni talab qilmaydi.",
     quiz_q2: "GRZ qisqartmasi nimani anglatadi?", quiz_q2_opts: ["Shahar ruxsat zonasi","Davlat ro‘yxatga olish raqami","Zona ish jadvali","Bosh hisob belgisi"], quiz_q2_correct_expl: "GRZ — davlat ro‘yxatga olish raqami.",
     quiz_q3: "Agar avtoturargohni SMS orqali to‘lagan bo‘lsangiz, uni muddatidan oldin qanday tugatasiz?", quiz_q3_opts: ["STOP matnli SMS yuborish","7757 ga S yoki C buyrug‘i bilan SMS yuborish","112 ga qo‘ng‘iroq qilish","Avtoturargohni tugatib bo‘lmaydi, vaqtni kutish kerak"], quiz_q3_correct_expl: "Muddatidan oldin to‘xtatish uchun 7757 ga S yoki C harfini yuboring. Foydalanilmagan vaqt puli qaytariladi.",
@@ -925,6 +969,7 @@ const translations = {
     quiz_q5: "«Парковки России» ilovasini qayerdan yuklab olish mumkin?", quiz_q5_opts: ["Faqat QR-kod orqali shitlardan","App Store, Google Play va shitlardagi QR-kod orqali","Faqat parking.mos.ru saytidan","Ilovani yuklab bo‘lmaydi, u brauzerga o‘rnatilgan"], quiz_q5_correct_expl: "Ilova App Store, Google Play rasmiy do‘konlarida va axborot shitlaridagi QR-kod orqali mavjud."
   },
   tj: {
+    lang_label: "Забон",
     hero_title: "Парковкаро пардохт кардан", hero_sub: "Зуд, осон ва бе ҷарима. Усули мувофиқи пардохти парковкаҳои кӯчаро интихоб кунед.",
     badge1: "Тарифи дақиқаӣ", badge2: "Бозгардони пул барои вақти истифоданашуда", badge3: "QR‑код дар тахтаҳо",
     payment_methods_title: "Усулҳои пардохт", card_lk_title: "Кабинети шахсӣ",
@@ -934,7 +979,7 @@ const translations = {
     card_blitz_title: "Барномаи блиц", blitz_step1: "QR‑кодро дар тахтаи иттилоотӣ дар аввали минтақа сканер кунед.", blitz_step2: "Рақами парковка (ё автоидентификатсияро пахш кунед) + ГРЗ ворид кунед.", blitz_step3: "Вақтро интихоб кунед, телефон ва рамзи СМС-ро ворид кунед.", blitz_step4: "Бо корт ё СБП пардохт кунед.", blitz_warning: "Бе дароз кардан ва тағйир додан. Барои функсияи пурра барномаи асосии «Парковки России» -ро зеркашӣ кунед.", blitz_image_caption: "📱 Барои пардохти зуд QR-кодро дар тахта скан кунед",
     card_sms_title: "СМС ба 7757", offline_badge: "Бе интернет", sms_format_label: "Формат барои оғоз:", sms_explain: "дар ин ҷо 1004 — рақами минтақа, А123АА199 — ГРЗ, 3 — соат (1–24).", sms_extend_label: "Дароз кардан", sms_extend_desc: "(ба 2 соат)", sms_stop_label: "Қатъи пеш аз мӯҳлат", sms_or: "ё", sms_warning: "Агар дар ҳисоби виртуалии парковка маблағ кифоя набошад, СМС барои тасдиқи пардохт аз ҳисоби телефон меояд (ғайр аз Tele2). Комиссияро аз оператори худ пурсед.", sms_tariff: "Тарифи дақиқаӣ: ҳангоми қатъи пеш аз мӯҳлат пул ба ҳисоби парковка бармегардад.",
     card_voice_title: "Хидмати овозӣ", voice_call: "Тамос гиред:", voice_step2: "Ба робот бигӯед «Пардохти парковка бо овоз».", voice_step3: "ГРЗ автомобил, рақами минтақа ва вақтро ном баред. Система такрор мекунад → тасдиқ кунед.", voice_warning: "Барои дароз кардан ё қатъ кардан такронан занг занед ё СМС бо фармони <span class=\"inline-code\">S</span> фиристед.",
-    footer_important: "Муҳим: тарифи дақиқаӣ дар ҳамаи усулҳо", footer_refund: "✅ Агар парковкаро пеш аз мӯҳлат қатъ кунед, пули вақти истифоданашуда <strong>дар ҳисоби парковка нигоҳ дошта мешавад</strong> ва барои сеансҳои оянда истифода мешавад. Ҳангоми пардохт тавассути СМС бозгардон ба ҳисоби телефон меравад (тибқи шартҳои оператор).", contact_center: "Маркази ягонаи тамос «Московский транспорт»:", operators: "Операторҳо: Мегафон, МТС, билайн, Tele2 (шартҳои пардохт метавонанд фарқ кунанд)", legal: "Тартиби пардохтҳои мобилӣ тибқи қонунгузории Федератсияи Россия", blitz_note_title: "Пардохти блиц бе насб:", blitz_note_text: "QR-кодро дар тахта сканер кунед — шакли зуд кушода мешавад. Дароз кардан ва тағйир додан танҳо дар версияи пурраи барнома дастрас аст.", city_note: "Хизмат дар Маскав, вилояти Маскав ва дигар минтақаҳои ҳузур кор мекунад", quiz_btn: "🔥 Худро санҷ!", click_hint: "👉 Барои гузаштани тест пахш кунед", quiz_title: "Дониши худро санҷед", quiz_check: "Ҷавобҳоро санҷед", quiz_retake: "Аз нав гузаштан",
+    footer_important: "Муҳим: тарифи дақиқаӣ дар ҳамаи усулҳо", footer_refund: "✅ Агар парковкаро пеш аз мӯҳлат қатъ кунед, пули вақти истифоданашуда <strong>дар ҳисоби парковка нигоҳ дошта мешавад</strong> ва барои сеансҳои оянда истифода мешавад. Ҳангоми пардохт тавассути СМС бозгардон ба ҳисоби телефон меравад (тибқи шартҳои оператор).", contact_center: "Маркази ягонаи тамос «Московский транспорт»:", operators: "Операторҳо: Мегафон, МТС, билайн, Tele2 (шартҳои пардохт метавонанд фарқ кунанд)", legal: "Тартиби пардохтҳои мобилӣ тибқи қонунгузории Федератсияи Россия", blitz_note_title: "Пардохти блиц бе насб:", blitz_note_text: "QR-кодро дар тахта сканер кунед — шакли зуд кушода мешавад. Дароз кардан ва тағйир додан танҳо дар версияи пурраи барнома дастрас аст.", city_note: "Хизмат дар Маскав, вилояти Маскав ва дигар минтақаҳои ҳузур кор мекунад", quiz_btn: "🔥 Худро санҷ!", click_hint: "Пахш кунед, Худро санҷ, барои гузаштани тест", quiz_title: "Дониши худро санҷед", quiz_check: "Ҷавобҳоро санҷед", quiz_retake: "Аз нав гузаштан",
     quiz_q1: "Кадом усулҳои пардохти парковка ҳатто бе дастрасӣ ба интернет кор мекунанд?", quiz_q1_opts: ["Барномаи «Парковки России»","СМС ба 7757 ва хидмати овозӣ","Кабинети шахсӣ дар parking.mos.ru","Барномаи блиц тавассути QR-код"], quiz_q1_correct_expl: "СМС ба 7757 ва хидмати овозӣ (занги 3210) интернетро талаб намекунанд.",
     quiz_q2: "Ихтисораи ГРЗ чӣ маъно дорад?", quiz_q2_opts: ["Минтақаи иҷозатномаи шаҳрӣ","Рақами давлатии бақайдигирӣ","Ҷадвали кори минтақа","Аломати ҳисоби асосӣ"], quiz_q2_correct_expl: "ГРЗ — рақами давлатии бақайдигирии автомобил.",
     quiz_q3: "Агар парковкаро тавассути СМС пардохт карда бошед, онро пеш аз мӯҳлат чӣ гуна қатъ мекунед?", quiz_q3_opts: ["СМС бо матни STOP фиристодан","СМС бо фармони S ё С ба 7757 фиристодан","Ба 112 занг задан","Қатъи парковка мумкин нест, фақат интизори анҷоми вақт шавед"], quiz_q3_correct_expl: "Барои қатъи пеш аз мӯҳлат тавассути СМС ҳарфи S ё С-ро ба 7757 фиристед. Пули вақти истифоданашуда бармегардад.",
